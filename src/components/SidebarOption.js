@@ -1,8 +1,19 @@
 import React from "react";
 import styled from "styled-components";
+import { addRoom } from "../util/firebase_controller";
 
 function SidebarOption({ Icon, title, addChannelOption }) {
-  const addChannel = () => {};
+  const addChannel = () => {
+    const channelName = prompt("Please enter the channel name");
+
+    if (channelName) {
+      try {
+        addRoom(channelName);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+  };
 
   const selectChannel = () => {};
   return (
