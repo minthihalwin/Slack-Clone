@@ -18,7 +18,7 @@ import { auth, dataCollection } from "../util/firebase_controller";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 function Sidebar() {
-  const [channels, loading] = useCollection(dataCollection("rooms"));
+  const [channels] = useCollection(dataCollection("rooms"));
   const [user] = useAuthState(auth);
   return (
     <SidebarContainer>
@@ -27,7 +27,7 @@ function Sidebar() {
           <h2>Binary Code</h2>
           <h3>
             <FiberManualRecordIcon />
-            Min Min
+            {user.displayName}
           </h3>
         </SidebarInfo>
         <CreateIcon />
