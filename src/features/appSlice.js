@@ -11,12 +11,15 @@ export const appSlice = createSlice({
   reducers: {
     enterRoom: (state, action) => {
       state.roomId= action.payload.roomId;
+    },
+    logout: (state) => {
+      state.roomId = null;
     }
   },
 
 });
 
-export const { enterRoom } = appSlice.actions;
+export const { enterRoom, logout } = appSlice.actions;
 
 
 export const selectRoomId = (state) => state.app.roomId;

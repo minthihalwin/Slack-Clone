@@ -1,10 +1,12 @@
 import { Button } from "@mui/material";
 import { serverTimestamp } from "firebase/firestore";
 import React, { useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import styled from "styled-components";
-import { addMessages } from "../util/firebase_controller";
+import { addMessages, auth } from "../util/firebase_controller";
 
 function ChatInput({ channelName, channelId, chatRef }) {
+  const [user] = useAuthState(auth);
   const [input, setInput] = useState("");
   const sendMessage = (e) => {
     e.preventDefault();
@@ -16,9 +18,8 @@ function ChatInput({ channelName, channelId, chatRef }) {
     const newMessage = {
       message: input,
       timestamp: serverTimestamp(),
-      user: "Min Min",
-      userImage:
-        "https://avatars.githubusercontent.com/u/109345050?s=400&u=53b34d0cd2c5aee11d3d3509e0a498bfe310eac4&v=4",
+      user: user.displayName,
+      userImage: user.photoURL,
     };
     try {
       addMessages(channelId, newMessage);

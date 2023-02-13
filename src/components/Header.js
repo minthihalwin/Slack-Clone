@@ -4,14 +4,27 @@ import { Avatar } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import SearchIcon from "@mui/icons-material/Search";
 import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
+import { auth } from "../util/firebase_controller";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { signOut } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { logout } from "../features/appSlice";
+
 
 function Header() {
+  const [user] = useAuthState(auth);
+  const dispatch = useDispatch();
   return (
     <HeaderContainer>
       {/* Header Left */}
       <HeaderLeft>
         <HeaderAvatar
-        //ToDo: Add onClick
+          alt={user?.displayName}
+          src={user?.photoURL}
+          onClick={() => {
+            signOut(auth);
+            dispatch(logout())
+          }}
         />
         <AccessTimeIcon />
       </HeaderLeft>
@@ -19,7 +32,7 @@ function Header() {
       {/* Header Search */}
       <HeaderSearch>
         <SearchIcon />
-        <input type="text" placeholder="Search Min Min" />
+        <input type="text" placeholder={`Search ${user.displayName}`} />
       </HeaderSearch>
 
       {/* Header Right */}
@@ -85,13 +98,12 @@ const HeaderSearch = styled.div`
 `;
 
 const HeaderRight = styled.div`
-    flex: 0.3;
-    display: flex;
-    align-items: flex-end;  //stick to the right
+  flex: 0.3;
+  display: flex;
+  align-items: flex-end; //stick to the right
 
-    > .MuiSvgIcon-root {
-        margin-left: auto;
-        margin-right: 20px;
-        
-    }
+  > .MuiSvgIcon-root {
+    margin-left: auto;
+    margin-right: 20px;
+  }
 `;

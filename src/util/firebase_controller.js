@@ -8,9 +8,9 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+ export const db = getFirestore(app); //Firestore Database
 
-const db = getFirestore(app); //Firestore Database
-export const auth = getAuth();
+export const auth = getAuth(app); //Initialize Firebase and get a reference to the service
 
 export const provider = new GoogleAuthProvider();
 

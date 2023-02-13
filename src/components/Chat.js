@@ -5,14 +5,14 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useSelector } from "react-redux";
 import { selectRoomId } from "../features/appSlice";
 import ChatInput from "./ChatInput";
-import { useCollection, useCollectionData, useCollectionOnce, useDocument } from "react-firebase-hooks/firestore";
+import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import { docRef, queryCollection } from "../util/firebase_controller";
 import Message from "./Message";
 
 function Chat() {
   const roomId = useSelector(selectRoomId);
   const [roomDetails] = useDocument(roomId && docRef("rooms", roomId));
-  const [roomMessages,loading] = useCollection(
+  const [roomMessages, loading] = useCollection(
     roomId && queryCollection("rooms", roomId, "messages", "asc")
   );
   const chatRef = useRef(null);
@@ -20,47 +20,53 @@ function Chat() {
   useEffect(() => {
     chatRef?.current?.scrollIntoView({
       behavior: "smooth",
-    })
-  },[roomId,loading])
- 
+    });
+  }, [roomId, loading]);
+
   return (
     <ChatContainer>
-      <>
-        <Header>
-          <HeaderLeft>
-            <h4>
-              <strong>#{roomDetails?.data().name} </strong>
-              <StarBorderOutlinedIcon />
-            </h4>
-          </HeaderLeft>
+      {roomDetails && roomMessages && (
+        <>
+          <Header>
+            <HeaderLeft>
+              <h4>
+                <strong>#{roomDetails?.data().name} </strong>
+                <StarBorderOutlinedIcon />
+              </h4>
+            </HeaderLeft>
 
-          <HeaderRight>
-            <p>
-              <InfoOutlinedIcon />
-              Details
-            </p>
-          </HeaderRight>
-        </Header>
-        <ChatMessages>
-          {roomMessages?.docs.map((doc) => {
-          const {message, timestamp, user, userImage} = doc.data();
-         
-          return (
-            <Message
-              key={doc.id}
-              message={message}
-              timestamp={timestamp}
-              user={user}
-              userImage={userImage}
-            />
-          )
-        
-        })}
-        <ChatBottom ref={chatRef} />  {/* Auto Scrolling when event listener is submitted */}
-        </ChatMessages>
+            <HeaderRight>
+              <p>
+                <InfoOutlinedIcon />
+                Details
+              </p>
+            </HeaderRight>
+          </Header>
+          <ChatMessages>
+            {roomMessages?.docs.map((doc) => {
+              const { message, timestamp, user, userImage } = doc.data();
 
-        <ChatInput chatRef={chatRef} channelName={roomDetails?.data().name} channelId={roomId} />
-      </>
+              return (
+                <Message
+                  key={doc.id}
+                  message={message}
+                  timestamp={timestamp}
+                  user={user}
+                  userImage={userImage}
+                />
+              );
+            })}
+            <ChatBottom ref={chatRef} />{" "}
+            {/* Auto Scrolling when event listener is submitted */}
+          </ChatMessages>
+
+          <ChatInput
+            chatRef={chatRef}
+            channelName={roomDetails?.data().name}
+            channelId={roomId}
+          />
+        </>
+      )}
     </ChatContainer>
   );
 }
